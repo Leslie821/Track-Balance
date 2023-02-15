@@ -1,0 +1,10 @@
+README.md
+node_modules  
+.DS_Store 
+.env
+package-lock.json
+yarn.lock
+settings.json
+.settings.json
+.vscode
+myenv

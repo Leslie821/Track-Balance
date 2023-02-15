@@ -1,0 +1,228 @@
+<ion-app>
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button default-href="/home.page.html"></ion-back-button>
+      </ion-buttons>
+      <ion-title>New</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="uploadImagesToDb()"> Save </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content fullscreen>
+    <ion-list>
+      <ion-item expand="block" (click)="isModalOpen=true">
+        <ion-label>Date</ion-label>
+        <ion-content class="ion-content">
+          <ion-modal class="ion-modal" [isOpen]="isModalOpen">
+            <ng-template>
+              <ion-datetime
+                #datetime
+                [value]="dateValue"
+                presentation="datetime"
+                (ionChange)="dateChanged(datetime.value)"
+                (ionCancel)="showPicker=false"
+                size="cover"
+              >
+              </ion-datetime>
+              <ion-button (click)="isModalOpen=false"> Select</ion-button>
+            </ng-template>
+          </ion-modal>
+        </ion-content>
+        <ion-input
+          [(ngModel)]="newForm.date"
+          class="input-date"
+          value="{{formattedString}}"
+          readonly
+        ></ion-input>
+      </ion-item>
+      <!-- Amount -->
+      <ion-item class="Amount">
+        <ion-label>Amount</ion-label>
+        <ion-input
+          [(ngModel)]="newForm.amount"
+          class="input-amount"
+          type="number"
+          [placeholder]="placeholderAmount"
+          autofocus
+        ></ion-input>
+      </ion-item>
+      <ion-item class="Category">
+        <ion-label>Category</ion-label>
+        <ion-select
+          interface="popover"
+          [placeholder]="placeholderCategory"
+          [(ngModel)]="newForm.type"
+        >
+          <ion-select-option value="Food">Food</ion-select-option>
+          <ion-select-option value="Entertainment"
+            >Entertainment</ion-select-option
+          >
+          <ion-select-option value="Necessities">Necessities</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item class="Account">
+        <ion-label>Account</ion-label>
+        <ion-select
+          interface="popover"
+          [placeholder]="placeholderAccount"
+          [(ngModel)]="newForm.account"
+        >
+          <ion-select-option value="Cash">Cash</ion-select-option>
+          <ion-select-option value="Bank">Bank</ion-select-option>
+          <ion-select-option value="Credit">Credit</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+    <br />
+    <ion-list>
+      <ion-item>
+        <ion-label>Receipt Photo</ion-label>
+        <ion-buttons slot="end">
+          <ion-button (click)="pickFromAlbum()">
+            <ion-icon slot="icon-only" name="albums"></ion-icon>
+          </ion-button>
+          <ion-button (click)="pickFromCam()">
+            <ion-icon slot="icon-only" name="camera"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+      <div>
+        <div *ngFor="let photo of photos; index as i" class="photo-item">
+          <img [src]="photo.dataUrl" />
+          <ion-fab horizontal="end" vertical="bottom">
+            <ion-fab-button color="danger" (click)="removePhoto(i)">
+              <ion-icon name="trash"></ion-icon>
+            </ion-fab-button>
+          </ion-fab>
+        </div>
+      </div>
+
+      <ion-item>
+        <ion-textarea
+          [(ngModel)]="newForm.remark"
+          style="height: 50vh"
+          placeholder="Remark"
+          [autoGrow]="true"
+        ></ion-textarea>
+      </ion-item>
+    </ion-list>
+
+    <ion-modal class="camera" [isOpen]="isModalOpenCam">
+      <ng-template>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-back-button
+              (click)="isModalOpenCam=false"
+              default-href="#"
+            ></ion-back-button>
+          </ion-buttons>
+          <ion-title>Tack Photo</ion-title>
+        </ion-toolbar>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-list>
+                <ion-item>
+                  <webcam
+                    class="webcam"
+                    [height]="300"
+                    [width]="300"
+                    [trigger]="triggerObservable"
+                    (imageCapture)="handleImage($event)"
+                    *ngIf="showWebcam"
+                    [allowCameraSwitch]="allowCameraSwitch"
+                    [switchCamera]="nextWebcamObservable"
+                    [videoOptions]="videoOptions"
+                    (cameraSwitched)="cameraWasSwitched($event)"
+                    (initError)="handleInitError($event)"
+                  ></webcam>
+                </ion-item>
+                <ion-item>
+                  <ion-buttons>
+                    <ion-button
+                      class="takeBtn"
+                      (click)="triggerSnapshot();"
+                      title="Take Picture"
+                    >
+                      <ion-icon name="camera-outline"></ion-icon>
+                    </ion-button>
+                    <ion-button
+                      class="actionBtn"
+                      (click)="showNextWebcam(true);"
+                      title="Switch Camera"
+                    >
+                      <ion-icon name="camera-reverse-outline"></ion-icon>
+                    </ion-button>
+                  </ion-buttons>
+                </ion-item>
+              </ion-list>
+
+              <ion-item class="snapshot" *ngIf="webcamImage">
+                <img [src]="webcamImage.imageAsDataUrl" />
+              </ion-item>
+              <ion-item>
+                <ion-button (click)="uploadCam()"> Upload</ion-button>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-template>
+      <!-- Cam End-->
+    </ion-modal>
+    <!-- Album Start-->
+    <ion-modal [isOpen]="isModalOpenAlbum">
+      <ng-template>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-back-button
+              (click)="isModalOpenAlbum=false"
+              default-href="#"
+            ></ion-back-button>
+          </ion-buttons>
+          <ion-title>Pick Photo</ion-title>
+        </ion-toolbar>
+        <ion-grid>
+          <ion-row style="align-self: center; justify-self: center; width: 80%">
+            <ion-col>
+              <ion-list>
+                <ion-item>
+                  <input
+                    type="file"
+                    id="file"
+                    (change)="onFileSelected($event)"
+                    #fileUpload
+                  />
+                  <ion-button (click)="uploadAlbum()"> Upload</ion-button>
+                </ion-item>
+                <ion-item>
+                  <img [src]="imagePath" width="20%" />
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-template>
+    </ion-modal>
+
+    <!-- Album End-->
+  </ion-content>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="speakers" (click)="goHome()">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <ion-label>Records</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="map" (click)="goAdd()">
+      <ion-icon name="add-circle"></ion-icon>
+      <ion-label>Add</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="about" (click)="goLogin()">
+      <ion-icon name="person-circle"></ion-icon>
+      <ion-label>User</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-app>

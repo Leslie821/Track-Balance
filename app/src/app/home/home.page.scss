@@ -1,0 +1,12 @@
+.calendar {
+  background-color: aliceblue;
+}
+ion-item {
+  --padding-start: 0;
+
+  text-align: end;
+}
+ion-card-header.ios {
+  display: flex;
+  flex-flow: column-reverse;
+}

@@ -1,0 +1,111 @@
+<ion-app>
+  <!-- Login -->
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>login</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">Email</ion-label>
+        <ion-input [(ngModel)]="user.email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Password</ion-label>
+        <ion-input type="password" [(ngModel)]="user.password"></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button class="login-button" (click)="submit()" expand="block">
+      Login
+    </ion-button>
+    <p class="forget-text">
+      <a (click)="isModalOpenForgot=true">Forgot Password?</a>
+    </p>
+    <p class="signup-text">
+      I'm a new user&nbsp;<a (click)="isModalOpenRegister=true">Sign Up?</a>
+    </p>
+  </ion-content>
+
+  <!-- Register -->
+  <ion-modal class="camera" [isOpen]="isModalOpenRegister">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-back-button
+              (click)="isModalOpenRegister=false"
+              default-href="#"
+            ></ion-back-button>
+          </ion-buttons>
+          <ion-title>Register</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-list>
+          <ion-item>
+            <ion-label position="floating">Name</ion-label>
+            <ion-input [(ngModel)]="userReg.name"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input [(ngModel)]="userReg.email"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Password</ion-label>
+            <ion-input [(ngModel)]="userReg.password"></ion-input>
+          </ion-item>
+        </ion-list>
+        <ion-button class="login-button" (click)="register()" expand="block">
+          Register
+        </ion-button>
+        <pre><code>{{data2()}}</code></pre>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Forgot Password -->
+  <ion-modal class="camera" [isOpen]="isModalOpenForgot">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-back-button
+              (click)="isModalOpenForgot=false"
+              default-href="#"
+            ></ion-back-button>
+          </ion-buttons>
+          <ion-title>Forgot Password</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-list>
+          <ion-item>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input [(ngModel)]="userForgot.email"></ion-input>
+          </ion-item>
+        </ion-list>
+        <ion-button class="login-button" expand="block"
+          >Reset Password</ion-button
+        >
+        <p class="signup-text">Remember Password&nbsp;<a>Sign In</a></p>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="speakers" (click)="goHome()">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <ion-label>Records</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="map" (click)="goAdd()">
+      <ion-icon name="add-circle"></ion-icon>
+      <ion-label>Add</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="about" (click)="goLogin()">
+      <ion-icon name="person-circle"></ion-icon>
+      <ion-label>User</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-app>
